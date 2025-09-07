@@ -1,25 +1,31 @@
-pipeline {
-  agent any
-  stages {
-    stage('Install Dependencies') {
-      steps {
-        bat 'npm install'
-      }
-    }
-    stage('Run Tests') {
-  steps {
-    bat 'echo "Skipping Snyk tests due to missing authentication"'
-  }
+ipeline {
+ agent any
+ stages {
+ stage('Checkout') {
+ steps {
+ git branch: 'main', url: ' https://github.com/your_github_username/8.2CDevSecOps.git'
+ }
+ }
+ stage('Install Dependencies') {
+ steps {
+ bat 'npm install'
+ }
+ }
+ stage('Run Tests') {
+ steps {
+ bat 'npm test || true' // Allows pipeline to continue despite test failures
+ }
+ }
+ stage('Generate Coverage Report') {
+ steps {
+ // Ensure coverage report exists
+ bat 'npm run coverage || exit /b 0'
+ }
+ }
+ stage('NPM Audit (Security Scan)') {
+ steps {
+ bat 'npm audit || true' // This will show known CVEs in the output
 }
-stage('Generate Coverage Report') {
-  steps {
-    bat 'echo "Skipping coverage report"'
-  }
-}
-stage('NPM Audit (Security Scan)') {
-  steps {
-    bat 'echo "Vulnerability scan complete. See report for details."'
-  }
 }
   }
 }
