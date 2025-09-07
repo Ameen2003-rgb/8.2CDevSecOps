@@ -7,19 +7,19 @@ pipeline {
       }
     }
     stage('Run Tests') {
-      steps {
-        bat 'npm test || true'
-      }
-    }
-    stage('Generate Coverage Report') {
-      steps {
-        bat 'npm run coverage || true'
-      }
-    }
-    stage('NPM Audit (Security Scan)') {
-      steps {
-        bat 'npm audit || true'
-      }
-    }
+  steps {
+    bat 'npm test'
+  }
+}
+stage('Generate Coverage Report') {
+  steps {
+    bat 'npm run coverage'
+  }
+}
+stage('NPM Audit (Security Scan)') {
+  steps {
+    bat 'npm audit'
+  }
+}
   }
 }
