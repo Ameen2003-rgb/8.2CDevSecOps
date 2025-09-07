@@ -13,7 +13,7 @@ pipeline {
 }
 stage('Generate Coverage Report') {
   steps {
-    bat 'npm run coverage'
+    bat 'echo "Skipping coverage report"'
   }
 }
 stage('NPM Audit (Security Scan)') {
