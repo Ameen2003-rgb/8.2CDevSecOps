@@ -18,13 +18,14 @@ pipeline {
             }
             post {
                 always {
-                    emailext (
-                        subject: "Test Stage: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
-                        body: "Stage 'Run Tests' finished with status: ${currentBuild.result}.\nCheck the full console log at: ${env.BUILD_URL}",
-                        to: "mohammedameen1089@gmail.com",
-			credentialsId: 'Mail',
-                        attachLog: true
-                    )
+                    withCredentials([string(credentialsId: 'Mail', variable: 'SMTP_PASSWORD')]) {
+                        emailext (
+                            subject: "Test Stage: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                            body: "Stage 'Run Tests' finished with status: ${currentBuild.result}.\nCheck the full console log at: ${env.BUILD_URL}",
+                            to: "mohammedameen1089@gmail.com",
+                            attachLog: true
+                        )
+                    }
                 }
             }
         }
@@ -39,13 +40,14 @@ pipeline {
             }
             post {
                 always {
-                    emailext (
-                        subject: "NPM Audit: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
-                        body: "Stage 'NPM Audit (Security Scan)' finished with status: ${currentBuild.result}.\nCheck the full console log at: ${env.BUILD_URL}",
-                        to: "mohammedameen1089@gmail.com",
-			credentialsId: 'Mail',
-                        attachLog: true
-                    )
+                    withCredentials([string(credentialsId: 'Mail', variable: 'SMTP_PASSWORD')]) {
+                        emailext (
+                            subject: "NPM Audit: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                            body: "Stage 'NPM Audit (Security Scan)' finished with status: ${currentBuild.result}.\nCheck the full console log at: ${env.BUILD_URL}",
+                            to: "mohammedameen1089@gmail.com",
+                            attachLog: true
+                        )
+                    }
                 }
             }
         }
