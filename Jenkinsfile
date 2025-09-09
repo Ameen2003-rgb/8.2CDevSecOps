@@ -14,10 +14,14 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
+                // The 'snyk test' command is failing due to an antivirus block.
+                // This command needs to be allowed by your antivirus software on the Jenkins agent.
                 bat 'npm test || exit /b 0'
             }
             post {
                 always {
+                    // This is the correct syntax for using 'Username with password' credentials.
+                    // The username and password variables can be accessed within this block.
                     withCredentials([usernamePassword(credentialsId: 'Mail', usernameVariable: 'SMTP_USER', passwordVariable: 'SMTP_PASS')]) {
                         emailext (
                             subject: "Test Stage: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
@@ -31,6 +35,7 @@ pipeline {
         }
         stage('Generate Coverage Report') {
             steps {
+                // This step will now work correctly after adding the 'coverage' script to package.json
                 bat 'npm run coverage || exit /b 0'
             }
         }
