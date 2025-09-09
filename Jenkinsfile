@@ -18,7 +18,7 @@ pipeline {
             }
             post {
                 always {
-                    withCredentials([string(credentialsId: 'Mail', variable: 'SMTP_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'Mail', usernameVariable: 'SMTP_USER', passwordVariable: 'SMTP_PASS')]) {
                         emailext (
                             subject: "Test Stage: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
                             body: "Stage 'Run Tests' finished with status: ${currentBuild.result}.\nCheck the full console log at: ${env.BUILD_URL}",
@@ -40,7 +40,7 @@ pipeline {
             }
             post {
                 always {
-                    withCredentials([string(credentialsId: 'Mail', variable: 'SMTP_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'Mail', usernameVariable: 'SMTP_USER', passwordVariable: 'SMTP_PASS')]) {
                         emailext (
                             subject: "NPM Audit: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
                             body: "Stage 'NPM Audit (Security Scan)' finished with status: ${currentBuild.result}.\nCheck the full console log at: ${env.BUILD_URL}",
