@@ -21,7 +21,7 @@ pipeline {
                     emailext (
                         subject: "Test Stage: Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
                         body: "Stage 'Run Tests' finished with status: ${currentBuild.result}.\nCheck the full console log at: ${env.BUILD_URL}",
-                        to: "your_email_address@example.com",
+                        to: "mohmmedameen1089@gmail.com",
                         attachLog: true
                     )
                 }
