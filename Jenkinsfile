@@ -16,16 +16,6 @@ pipeline {
             steps {
                 bat 'npm test || exit /b 0'
             }
-            post {
-                always {
-                    emailext (
-                        subject: "Test Stage: Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                        body: "Stage 'Run Tests' finished with status: ${currentBuild.currentResult}. \nSee logs: ${env.BUILD_URL}",
-                        to: "mohammedameen1089@gmail.com",
-                        attachLog: true
-                    )
-                }
-            }
         }
         stage('Generate Coverage Report') {
             steps {
@@ -36,27 +26,25 @@ pipeline {
             steps {
                 bat 'npm audit || exit /b 0'
             }
-            post {
-                always {
-                    emailext (
-                        subject: "NPM Audit: Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                        body: "Stage 'NPM Audit (Security Scan)' finished with status: ${currentBuild.currentResult}. \nSee logs: ${env.BUILD_URL}",
-                        to: "mohammedameen1089@gmail.com",
-                        attachLog: true
-                    )
-                }
-            }
         }
     }
 
     post {
         always {
-            emailext (
-                subject: "Pipeline Summary: Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
-                body: """Job: ${env.JOB_NAME}
-                Build Number: ${env.BUILD_NUMBER}
-                Result: ${currentBuild.currentResult}
-                Logs: ${env.BUILD_URL}""",
+            // Send a single email at the end of the build
+            emailext(
+                subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                body: """Build URL: ${env.BUILD_URL}
+Build Status: ${currentBuild.result}
+
+Stages completed:
+- Checkout
+- Install Dependencies
+- Run Tests
+- Generate Coverage Report
+- NPM Audit (Security Scan)
+
+Check console output for detailed logs.""",
                 to: "mohammedameen1089@gmail.com",
                 attachLog: true
             )
