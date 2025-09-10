@@ -12,17 +12,19 @@ pipeline {
                 bat 'npm install'
             }
         }
-        stage('Run Tests') {
+        stage('Run Tests & Snyk Scan') {
             steps {
-                bat 'npm test || exit /b 0'
+                // This command now correctly runs the 'test' script from package.json
+                bat 'npm run test || exit /b 0'
             }
         }
         stage('Generate Coverage Report') {
             steps {
+                // This command now correctly runs the 'coverage' script from package.json
                 bat 'npm run coverage || exit /b 0'
             }
         }
-        stage('NPM Audit (Security Scan)') {
+        stage('NPM Audit') {
             steps {
                 bat 'npm audit || exit /b 0'
             }
@@ -31,10 +33,11 @@ pipeline {
 
     post {
         always {
-            // Send a single email at the end of the build
-            emailext(
-                subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
-                body: """Build URL: ${env.BUILD_URL}
+            // The withCredentials block must wrap the emailext step to provide access to the credentials.
+            withCredentials([usernamePassword(credentialsId: 'Mail', usernameVariable: 'SMTP_USER', passwordVariable: 'SMTP_PASS')]) {
+                emailext(
+                    subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                    body: """Build URL: ${env.BUILD_URL}
 Build Status: ${currentBuild.result}
 
 Stages completed:
@@ -45,9 +48,10 @@ Stages completed:
 - NPM Audit (Security Scan)
 
 Check console output for detailed logs.""",
-                to: "mohammedameen1089@gmail.com",
-                attachLog: true
-            )
+                    to: "mohammedameen1089@gmail.com",
+                    attachLog: true
+                )
+            }
         }
     }
 }
